@@ -48,6 +48,54 @@ Add to your `mcp.json` (VS Code / Claude Desktop user settings):
 
 If you omit `--workspace`, the server will infer the current working directory.
 
+### Windows example
+
+On Windows (PowerShell / Bash), if your thesis root is at `C:\Users\User\projects\Thesis`, use:
+
+```jsonc
+"latex-mcp-server": {
+  "command": "uv",
+  "args": [
+    "tool", "run", "latex-mcp-server",
+    "--workspace", "C:/Users/User/projects/Thesis"
+  ]
+}
+```
+
+Forward slashes are fine; they avoid the need to escape backslashes. Be sure to replace the placeholder `ABSOLUTE_PATH_TO_YOUR_THESIS_ROOT` — leaving a placeholder like `WORKSPACE_FOLDER_PATH` will cause the runtime error:
+
+```
+Workspace does not exist: C:\Users\User\WORKSPACE_FOLDER_PATH\Thesis
+```
+
+### Alternative: Install once, then call directly
+
+After running:
+
+```bash
+cd latex-mcp-server
+uv tool install -e .
+```
+
+You can simplify the config to:
+
+```jsonc
+"latex-mcp-server": {
+  "command": "latex-mcp-server",
+  "args": ["--workspace", "C:/Users/User/projects/Thesis"]
+}
+```
+
+### Troubleshooting
+
+| Symptom | Cause | Fix |
+|---------|-------|-----|
+| `No solution found when resolving tool dependencies` | The tool name `latex-mcp-server` isn’t published on PyPI and `uv` tried to resolve it as a dependency (often happens if you used a config field like `requires` or didn’t install locally) | Run `uv tool install -e ./latex-mcp-server` from repo root, then update your `mcp.json` to invoke the installed script directly |
+| `Workspace does not exist: C:\\Users\\...WORKSPACE_FOLDER_PATH...` | Placeholder path left unchanged | Replace with the real absolute path |
+| `TypeScript runtime unavailable` in tool results | Node.js not installed (only needed for TS bridge tools) | Install Node.js 18+ or ignore if you don’t need TS tools |
+
+If you change TypeScript sources, rebuild and re-vendor (`npm run build`) before restarting the server.
+
 ## TypeScript Bridge
 
 The TypeScript sources live in `ts_functions/src`. Their compiled JavaScript output is vendored into the Python package under `latex_mcp_server/ts_dist` so users do **not** need `npm` or `tsc` just to run the server. To modify or add TS functions:
