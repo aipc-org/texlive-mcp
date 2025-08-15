@@ -1,19 +1,59 @@
 # LaTeX MCP Server
 
-An **MCP (Model Context Protocol) server** exposing utilities for working with a LaTeX thesis project.
+An **MCP (Model Context Protocol) server** that can supercharge your VSCode + LaTex Workshop writing workflow
 
-It demonstrates how to implement MCP tools in **both Python and TypeScript**. The Python process is the MCP server; selected tools are delegated to a small Node/TypeScript module via a bridge.
+Currently houses MCP tools, and new tools can be easily added in either Python and TypeScript. The Python process is the MCP server; selected tools are delegated to a small Node/TypeScript module via a bridge.
 
-## Features
+## LaTex MCP Server + Copilot/Claude/Cursor, what can you do?
+- Read your cited papers, verify / add onto your claims
+- Access your python scripts to generate new figures / latex tables based on your experiment data, and **place them into latex autonomously** 
+- Can verify every step and ensure your pdf compiles 
+- Functionally it can autonomously take your outline + experimental results and turn it into a paper (may looks like slop though)
 
-- List `.tex` files in your workspace
-- Read file content (with size cap)
-- Compile LaTeX (pdflatex) with minimal args
-- Extract citation keys from a `.tex` file
-- TypeScript-provided tools:
-  - Summarize a block of text heuristically
-  - Suggest a BibTeX key given a title & authors
- - Read PDFs directly or by citation key (`read_pdf_from_citation`) which looks up `resources/cited_papers/index.json` and auto-downloads if needed
+<p align="center">
+  <video src="./docs/demo/minimal.mp4" controls width="600">
+    Your browser does not support the video tag.
+  </video>
+</p>
+
+
+
+---
+
+### Python Tools
+
+- **list_tex_files**  
+  Lists all `.tex` files under your LaTeX workspace (relative paths). Useful for LLMs or agents to discover available chapters and sections.
+
+- **read_file**  
+  Reads a text or binary-safe slice of a file given a relative path inside the workspace. Supports specifying a maximum number of bytes to return.
+
+- **extract_bibliography**  
+  Parses a BibTeX file and returns structured entry metadata, including download URLs (DOI, arXiv). Helps agents or scripts work with citation data programmatically.
+
+- **download_bibliography**  
+  Downloads PDFs for bibliography entries listed in `resources/cited_papers/index.json`. Can force re-downloads and limit the number of new downloads.
+
+- **compile_latex**  
+  Runs LaTeX compilation (`pdflatex`/`xelatex` via `latexmk`) on the main document and returns success plus a log snippet. Supports specifying the entry `.tex` file and number of passes.
+
+- **read_pdf**  
+  Extracts text and metadata from a PDF filepath using `pypdf`, with page and character limits. Stores a JSON artifact for downstream use.
+
+- **read_pdf_from_citation**  
+  Resolves a citation key via `resources/cited_papers/index.json` to its PDF and extracts text (auto-downloads if needed). Returns extracted text, metadata, and the citation key.
+
+---
+
+### TypeScript Bridge Tools
+
+- **summarize_text**  
+  Produces a concise natural language summary of provided LaTeX or text content. Accepts a maximum sentence count for the summary.
+
+- **suggest_bib_key**  
+  Suggests a stable BibTeX key based on authors, year, and title metadata. Useful for generating consistent citation keys.
+
+---
 
 ## Install (with `uv`)
 
@@ -43,7 +83,7 @@ Add to your `mcp.json` (VS Code / Claude Desktop user settings):
 ```jsonc
 "latex-mcp-server": {
   "command": "uv",
-  "args": ["tool", "run", "latex-mcp-server", "--workspace", "ABSOLUTE_PATH_TO_YOUR_THESIS_ROOT"]
+  "args": ["tool", "run", "latex-mcp-server", "--workspace", "ABSOLUTE_PATH_TO_YOUR_PROJECT_ROOT"]
 }
 ```
 
@@ -51,22 +91,22 @@ If you omit `--workspace`, the server will infer the current working directory.
 
 ### Windows example
 
-On Windows (PowerShell / Bash), if your thesis root is at `C:\Users\User\projects\Thesis`, use:
+On Windows (PowerShell / Bash), if your paper_1 root is at `C:\Users\User\projects\paper_1`, use:
 
 ```jsonc
 "latex-mcp-server": {
   "command": "uv",
   "args": [
     "tool", "run", "latex-mcp-server",
-    "--workspace", "C:/Users/User/projects/Thesis"
+    "--workspace", "C:/Users/User/projects/paper_1"
   ]
 }
 ```
 
-Forward slashes are fine; they avoid the need to escape backslashes. Be sure to replace the placeholder `ABSOLUTE_PATH_TO_YOUR_THESIS_ROOT` — leaving a placeholder like `WORKSPACE_FOLDER_PATH` will cause the runtime error:
+Forward slashes are fine; they avoid the need to escape backslashes. Be sure to replace the placeholder `ABSOLUTE_PATH_TO_YOUR_PAPER_1_ROOT` — leaving a placeholder like `WORKSPACE_FOLDER_PATH` will cause the runtime error:
 
 ```
-Workspace does not exist: C:\Users\User\WORKSPACE_FOLDER_PATH\Thesis
+Workspace does not exist: C:\Users\User\WORKSPACE_FOLDER_PATH\PAPER_1
 ```
 
 ### Alternative: Install once, then call directly
@@ -83,7 +123,7 @@ You can simplify the config to:
 ```jsonc
 "latex-mcp-server": {
   "command": "latex-mcp-server",
-  "args": ["--workspace", "C:/Users/User/projects/Thesis"]
+  "args": ["--workspace", "C:/Users/User/projects/paper_1"]
 }
 ```
 
