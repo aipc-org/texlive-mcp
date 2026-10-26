@@ -3,20 +3,21 @@ requires = ["setuptools>=61.0", "wheel"]
 build-backend = "setuptools.build_meta"
 
 [project]
-name = "latex-mcp-server"
-version = "0.1.0"
-description = "MCP server for LaTeX projects combining Python and TypeScript functions"
+name = "texlive-mcp"
+version = "0.2.0"
+description = "Local TeX Live LaTeX MCP server using the official Python SDK"
 authors = [ { name = "Yeok", email = "yeoktattcheah@gmail.com" } ]
 readme = "README.md"
 license = "MIT"
 requires-python = ">=3.10"
 dependencies = [
   "typing-extensions>=4.8.0",
-  "pypdf>=4.0.0"
+  "pypdf>=6,<7",
+  "mcp>=1.26,<2"
 ]
 
 [project.scripts]
-latex-mcp-server = "latex_mcp_server.server:main"
+texlive-mcp = "latex_mcp_server.local:main"
 
 [project.optional-dependencies]
 dev = [
@@ -25,9 +26,6 @@ dev = [
   "mypy>=1.8.0",
   "pytest>=8.0.0"
 ]
-
-[tool.setuptools.package-data]
-"latex_mcp_server" = ["ts_dist/**/*"]
 
 [tool.black]
 line-length = 100

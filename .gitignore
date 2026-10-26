@@ -21,3 +21,6 @@ Thumbs.db
 
 # Keep compiled TS artifacts (ts_dist) since they ship with the package
 !latex_mcp_server/ts_dist/
+.venv/
+.latex-mcp-build/
+.pytest_cache/

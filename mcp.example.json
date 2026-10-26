@@ -1,0 +1,13 @@
+{
+  "mcpServers": {
+    "texlive-mcp": {
+      "command": "/absolute/path/to/texlive-mcp/run-local.sh",
+      "args": [
+        "--workspace",
+        "/替换为你的论文目录",
+        "--tex-bin",
+        "/opt/texlive/bin/x86_64-linux"
+      ]
+    }
+  }
+}
