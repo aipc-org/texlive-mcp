@@ -1,6 +1,6 @@
 # texlive-mcp
 
-基于 [Yeok-c/latex-mcp-server](https://github.com/Yeok-c/latex-mcp-server) 的本地改造，基线提交 f791130edc4e38bada401ae4c688f121255225da。保留上游 MIT 许可；本次新增和改造内容由 Codex/GPT 编写，Git 来源名约定为 Michalrees。
+基于 [Yeok-c/latex-mcp-server](https://github.com/Yeok-c/latex-mcp-server) 的本地改造，基线提交 f791130edc4e38bada401ae4c688f121255225da。保留上游 MIT 许可。创作来自GPT
 
 面向本机 Linux、TeX Live 2026：`/opt/texlive/bin/x86_64-linux`。使用官方 Python MCP SDK，通过 stdio 通信，Python >=3.10，不需要 Node.js。
 
@@ -49,6 +49,8 @@ python3 -m venv .venv
 
 ## 上游来源
 
-本项目由 Michalrees（Codex/GPT）在上游基础上改造。上游作者信息和 MIT 许可保留；本次改造不代表由上游作者编写。
+创作来自GPT
+
+上游作者信息和 MIT 许可保留。
 
 不带参数执行 `run-local.sh` 时，以调用时的当前目录作为论文工作区；也可以显式传入 `--workspace`。
